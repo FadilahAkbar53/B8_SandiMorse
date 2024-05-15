@@ -1,13 +1,9 @@
-//
-// Created by ASUS on 2/5/2024.
-//
-
 #ifndef B8_SANDIMORSE_TREE_H
 #define B8_SANDIMORSE_TREE_H
 
 #include "Struktur.h"
-#include "lib/Stack.h"
-#include <ctype.h>
+#include "StackQueue.h"
+#include "Util.h"
 
 morseTree *createmorseTree(info data) {
     morseTree *newmorseTree = (morseTree *) malloc(sizeof(morseTree));
@@ -37,12 +33,12 @@ void insertCodeMorse(morseTree **root, info data, info codeMorse[]) {
     for (int i = 0; i < strlen(codeMorse); i++) {
         if (codeMorse[i] == '.') {
             if (pmorseTree->leftChild == NULL) {
-                insertLeft(&pmorseTree, ' ');
+                insertLeft(&pmorseTree, '~');
             }
             pmorseTree = pmorseTree->leftChild;
         } else if (codeMorse[i] == '-') {
             if (pmorseTree->rightChild == NULL) {
-                insertRight(&pmorseTree, ' ');
+                insertRight(&pmorseTree, '~');
             }
             pmorseTree = pmorseTree->rightChild;
         }
@@ -50,23 +46,11 @@ void insertCodeMorse(morseTree **root, info data, info codeMorse[]) {
     pmorseTree->data = data;
 }
 
-void printTree(morseTree *root) {
+void printInOrder(morseTree *root) {
     if (root != NULL) {
-        printf("%c", root->data); // Cetak data dari simpul saat ini
-
-        if (root->leftChild != NULL || root->rightChild != NULL) {
-            printf("("); // Cetak tanda kurung pembuka jika simpul saat ini memiliki anak
-
-            if (root->leftChild != NULL)
-                printTree(root->leftChild); // Cetak anak kiri jika ada
-
-            printf(","); // Cetak koma sebagai pemisah antara anak kiri dan kanan
-
-            if (root->rightChild != NULL)
-                printTree(root->rightChild); // Cetak anak kanan jika ada
-
-            printf(")"); // Cetak tanda kurung penutup
-        }
+        printInOrder(root->leftChild);
+        printf("%c", root->data);
+        printInOrder(root->rightChild);
     }
 }
 
@@ -110,99 +94,108 @@ void initialMorse(morseTree *root) {
     insertCodeMorse(&root, '\0', ".-..-."); // .-..--
 }
 
-void searchTextFromMorse(morseTree *root, info codeMorse[]) {
-    morseTree *pmorseTree = root;
-    for (int i = 0; i < strlen(codeMorse); i++) {
-        if (codeMorse[i] == '.') {
-            pmorseTree = pmorseTree->leftChild;
-        } else if (codeMorse[i] == '-') {
-            pmorseTree = pmorseTree->rightChild;
-        }
-    }
-    printf("%c", pmorseTree->data);
-}
+void decodeMorse(morseTree *root, char codeMorse[]) {
+    // test the function
+    int count_strings = 0;
+    char **split_strings = split(codeMorse, " ", &count_strings);
 
-// Fungsi untuk mencari kode Morse dari sebuah karakter dalam pohon Morse
-int getMorseCode(morseTree *morseTree, char character, list *codeStack) {
-    if (morseTree == NULL)
-        return 0;
-
-    if (morseTree->data == character)
-        return 1;
-
-    if (getMorseCode(morseTree->leftChild, character, codeStack)) {
-        push(&codeStack->head, &codeStack->tail, '.');
-        return 1;
-    }
-
-    if (getMorseCode(morseTree->rightChild, character, codeStack)) {
-        push(&codeStack->head, &codeStack->tail, '-');
-        return 1;
-    }
-
-    return 0;
-}
-
-// Fungsi untuk mencari kode Morse dari sebuah karakter dalam pohon Morse
-int getMorseCodetes(morseTree *morseTree, char character, char *code) {
-    if (morseTree == NULL)
-        return 0;
-
-    if (morseTree->data == character)
-        return 1;
-
-    if (getMorseCodetes(morseTree->leftChild, character, code)) {
-        strcat(code, ".");
-        return 1;
-    }
-
-    if (getMorseCodetes(morseTree->rightChild, character, code)) {
-        strcat(code, "-");
-        return 1;
-    }
-
-    return 0;
-}
-
-void getMorsetes(morseTree **root, char *morse) {
-
-    char morseCode[100];
-    morseCode[0] = '\0';
-    for (int i = 0; i < strlen(morse); i++) {
-        char code[100] = "";
-        getMorseCodetes(*root, toupper(morse[i]), code);
-        strcat(morseCode, code);
-        if (morse[i + 1] != '\0' && morse[i + 1] != ' ') {
-//            strcat(morseCode, ".-..--"); // Tambahkan spasi setelah setiap karakter Morse, kecuali jika karakter berikutnya adalah spasi
-            strcat(morseCode, " "); // Tambahkan spasi setelah setiap karakter Morse, kecuali jika karakter berikutnya adalah spasi
-        }
-    }
-    printf("%s\n", morseCode);
-}
-
-void getMorse(morseTree **root, char *morse) {
-
-    list codeStack;
-    codeStack.head = NULL;
-    codeStack.tail = NULL;
-
-
-    for (int i = 0; i < strlen(morse); i++) {
-        if (morse[i] == ' ') {
-            while (!isEmpty(codeStack.head)) {
-                printf("%c", pop(&codeStack.head));
+    // print out the substrings, which should be each word of the sentence above
+    for (int i = 0; i < count_strings; i++) {
+//        printf("%s ", split_strings[i]);
+        morseTree *pmorseTree = root;
+        for (int j = 0; j < strlen(split_strings[i]); j++) {
+            if (split_strings[i][j] == '.') {
+                pmorseTree = pmorseTree->leftChild;
+            } else if (split_strings[i][j] == '-') {
+                pmorseTree = pmorseTree->rightChild;
+            } else {
+                printf("Kode morse salah\n");
+                return;
             }
-//            printf(".-..--");
-            printf(" ");
-        } else {
-            getMorseCode(*root, toupper(morse[i]), &codeStack);
         }
-    }
-    while (!isEmpty(codeStack.head)) {
-        printf("%c", pop(&codeStack.head));
+        printf("%c", pmorseTree->data);
     }
     printf("\n");
 
+    // free the dynamically allocated space for each string
+    for (int i = 0; i < count_strings; i++)
+        free(split_strings[i]);
+
+    // free the dynamically allocated space for the array of pointers to strings
+    free(split_strings);
 }
+
+
+// Fungsi untuk mencari path dari nodeTree yang mengandung karakter ke akar
+bool findPath(morseTree *root, stack *path, char karakter) {
+    if (root == NULL) {
+        return false;
+    }
+
+    push(path, root);
+
+    if (root->data == karakter) {
+        return true;
+    }
+
+    if ((root->leftChild && findPath(root->leftChild, path, karakter)) ||
+        (root->rightChild && findPath(root->rightChild, path, karakter))) {
+        return true;
+    }
+
+    pop(path);
+    return false;
+}
+
+void findPathNode(morseTree *root, stack *stackPathNode, char karakter) {
+    if (root == NULL) {
+        printf("Pohon kosong\n");
+        return;
+    }
+    findPath(root, (stack *) stackPathNode, karakter);
+//    if (findPath(root, (stack *) stackPathNode, karakter)) {
+//        printf("Data ditemukan: %c ", karakter);
+//    } else {
+//        printf("Data tidak ditemukan\n");
+//    }
+
+
+}
+
+void encode(morseTree *root, char text[]) {
+
+    for (int i = 0; i < strlen(text); i++) {
+        if (text[i] == ' ') {
+            printf(".-..-.");
+        } else {
+            stack stackPathNode;
+            stackPathNode.top = NULL;
+            findPathNode(root, &stackPathNode, toupper(text[i]));
+            printf("route : ");
+            printdata(stackPathNode.top);
+            printf(" morse = ");
+
+            char morseCode[10] = ""; // Morse codes are typically short, max length is 5 for one character
+            int morseCodeIndex = 0;
+
+            while (!isEmpty(stackPathNode.top)) {
+                morseTree *curr = stackPathNode.top->data;
+                pop(&stackPathNode);
+                if (stackPathNode.top == NULL) {
+                    break;
+                }
+                morseTree *parent = stackPathNode.top->data;
+                if (parent->leftChild == curr) {
+                    morseCode[morseCodeIndex++] = '.';
+                } else if (parent->rightChild == curr) {
+                    morseCode[morseCodeIndex++] = '-';
+                }
+            }
+            printf("%s", morseCode);
+        }
+        printf("\n");
+    }
+}
+
 
 #endif //B8_SANDIMORSE_TREE_H
