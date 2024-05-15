@@ -171,9 +171,9 @@ void encode(morseTree *root, char text[]) {
             stack stackPathNode;
             stackPathNode.top = NULL;
             findPathNode(root, &stackPathNode, toupper(text[i]));
-            printf("route : ");
-            printdata(stackPathNode.top);
-            printf(" morse = ");
+//            printf("route : ");
+//            printdata(stackPathNode.top);
+//            printf(" morse = ");
 
             char morseCode[10] = ""; // Morse codes are typically short, max length is 5 for one character
             int morseCodeIndex = 0;
@@ -193,7 +193,7 @@ void encode(morseTree *root, char text[]) {
             }
             printf("%s", morseCode);
         }
-        printf("\n");
+        printf(" ");
     }
 }
 

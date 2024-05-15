@@ -10,14 +10,11 @@ int main(){
     morseTree *root = createmorseTree('~');
 
     initialMorse(root);
-
-//    printInOrder(root);
-//
-//    printf("\n");
-//
-    encode(root, "JELANG Anugrah");
-
-
+    printf("print in order : ");
+    printInOrder(root);
+    printf("\nprint encoded : ");
+    encode(root, "JELANG ANUGRAH");
+    printf("\nprint decoded : ");
     decodeMorse(root, ".--- . .-.. .- -. --. .-..-. .- -. ..- --. .-. .- ....");
 
 
