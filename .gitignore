@@ -1,5 +1,6 @@
 .idea
 .vscode
-/testing
 *.exe
 *.txt
+testing
+test
