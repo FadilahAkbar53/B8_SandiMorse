@@ -14,10 +14,14 @@ void initialMorse(TreeNode **root);
 char searchMorseCode(TreeNode *root, const char *code);
 void findMorseCode(TreeNode *root, char character, char *buffer, int depth);
 void printMorseCode(TreeNode *root, const char *input);
-void encodeMorse(TreeNode *root, const char *input, char *output);
-void decodeMorse(TreeNode *root, const char *input, char *output);
 void freeTree(TreeNode *root);
 char *readInput();
+
+//Features
+void writeMessageToFile(const char *filename);
+void readMessageFromFile(TreeNode *root, const char *filename);
+void user1Menu(TreeNode *root);
+void user2Menu(TreeNode *root);
 void fitur_encodeMorse(TreeNode *root);
 void fitur_decodeMorse(TreeNode *root);
 void printInorder(TreeNode *root);

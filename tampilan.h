@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 void menuUtama()
 {
     system("cls");
@@ -47,7 +48,7 @@ void menuPercakapan()
 {
     system("cls");
     printf("=====================================\n");
-    printf("|                Menu                |\n");
+    printf("|       Menu Pilihan Pengguna        |\n");
     printf("=====================================\n");
     printf("| 1. Pengguna 1                      |\n");
     printf("| 2. Pengguna 2                      |\n");
@@ -60,9 +61,9 @@ void menuPengguna1()
 {
     system("cls");
     printf("=====================================\n");
-    printf("|               Menu                 |\n");
+    printf("|           Menu Pengguna 1          |\n");
     printf("=====================================\n");
-    printf("| 1. Menulis pesan kepada pengguna 1 |\n");
+    printf("| 1. Menulis pesan kepada pengguna 2 |\n");
     printf("| 2. Membaca Pesan dari pengguna 2   |\n");
     printf("| 0. Kembali                         |\n");
     printf("=====================================\n");
@@ -73,10 +74,10 @@ void menuPengguna2()
 {
     system("cls");
     printf("=====================================\n");
-    printf("|               Menu                 |\n");
+    printf("|           Menu Pengguna 2          |\n");
     printf("=====================================\n");
     printf("| 1. Menulis pesan kepada pengguna 1 |\n");
-    printf("| 2. Membaca Pesan dari pengguna 2   |\n");
+    printf("| 2. Membaca Pesan dari pengguna 1   |\n");
     printf("| 0. Kembali                         |\n");
     printf("=====================================\n");
     printf("Pilihan anda : ");

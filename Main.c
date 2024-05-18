@@ -21,7 +21,7 @@ int main()
         case 1: // Baca file
         {
             printf("Baca file");
-            readMessageFromFileAndConvert(morseTree);
+            readMessageFromFile(morseTree, "../input.txt");
             getchar();
         }
         break;
@@ -84,28 +84,28 @@ int main()
             }
         }
         break;
-        case 4: // Percakapan
+        case 4: // Percakapan user
         {
-            int pilihan4, pilihanPengguna;
+            int pilihanPengguna;
             menuPercakapan();
-            scanf("%d", &pilihan4);
+            scanf("%d", &pilihanPengguna);
             getchar();
 
-            if (pilihan4 == 0)
+            if (pilihanPengguna == 0)
             {
                 break; // Kembali ke menu utama
             }
 
-            switch (pilihan4)
+            switch (pilihanPengguna)
             {
             case 1:
             {
-                printf("Percakapan sebagai Pengguna 1\n");
+                user1Menu(morseTree);
             }
             break;
             case 2:
             {
-                printf("Percakapan sebagai Pengguna 2\n");
+                user2Menu(morseTree);
             }
             break;
             default:

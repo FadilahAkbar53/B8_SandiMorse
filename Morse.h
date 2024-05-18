@@ -92,10 +92,12 @@ void initialMorse(TreeNode **root)
     // Add Morse code for space
     insertCodeMorse(root, ".-..-.", ' ');
 
-    // Add Morse code for simbol
+    // Add Morse code for symbol
     insertCodeMorse(root, "..--..", '?');
     insertCodeMorse(root, "-.-.--", '!');
     insertCodeMorse(root, "---...", ':');
+    insertCodeMorse(root, "-.-.-.", ';');
+    insertCodeMorse(root, "--..--", ',');
     insertCodeMorse(root, "-...-", '=');
     insertCodeMorse(root, "-..-.", '/');
     insertCodeMorse(root, "-.---.", '(');
@@ -157,47 +159,6 @@ void printMorseCode(TreeNode *root, const char *input)
     printf("\n");
 }
 
-void encodeMorse(TreeNode *root, const char *input, char *output)
-{
-    output[0] = '\0';
-    for (int i = 0; i < strlen(input); i++)
-    {
-        if (input[i] == ' ')
-        {
-            strcat(output, ".-..-. ");
-        }
-        else
-        {
-            char buffer[100];
-            findMorseCode(root, toupper(input[i]), buffer, 0);
-            strcat(output, buffer);
-            strcat(output, " ");
-        }
-    }
-    // Remove the trailing space
-    output[strlen(output) - 1] = '\0';
-}
-
-void decodeMorse(TreeNode *root, const char *input, char *output)
-{
-    output[0] = '\0';
-
-    char *token = strtok((char *)input, " ");
-    while (token != NULL)
-    {
-        char result = searchMorseCode(root, token);
-        if (result != '\0')
-        {
-            strncat(output, &result, 1);
-        }
-        else
-        {
-            strcat(output, "?");
-        }
-        token = strtok(NULL, " ");
-    }
-}
-
 void freeTree(TreeNode *root)
 {
     if (root != NULL)
@@ -223,9 +184,11 @@ char *readInput()
     return input;
 }
 
-void writeMessageToFile(TreeNode *root)
+/*FITUR FITUR*/
+
+void writeMessageToFile(const char *filename)
 {
-    FILE *file = fopen("C:/Users/Fadilah Akbar/OneDrive/Dokumen/Kuliah/Semester 2/Struktur Data dan Algortima/SandiMorse2/test1/user1.txt", "a");
+    FILE *file = fopen(filename, "a+");
     if (file == NULL)
     {
         printf("Error opening file for writing.\n");
@@ -237,12 +200,12 @@ void writeMessageToFile(TreeNode *root)
 
     fclose(file);
     free(input);
-    printf("Message written to file user1.txt.\n");
+    printf("Message written to file %s.\n", filename);
 }
 
-void readMessageFromFileAndConvert(TreeNode *root)
+void readMessageFromFile(TreeNode *root, const char *filename)
 {
-    FILE *file = fopen("C:/Users/Fadilah Akbar/OneDrive/Dokumen/Kuliah/Semester 2/Struktur Data dan Algortima/SandiMorse2/test1/user1.txt", "r");
+    FILE *file = fopen(filename, "r");
     if (file == NULL)
     {
         printf("Error opening file for reading.\n");
@@ -254,17 +217,108 @@ void readMessageFromFileAndConvert(TreeNode *root)
     {
         // Remove newline character
         line[strcspn(line, "\n")] = '\0';
-        printf("Original message: %s\n", line);
 
-        // Convert to Morse code
-        printf("Morse Code: ");
-        printMorseCode(root, line);
+        // Check if the line contains Morse code or regular characters
+        int isMorseCode = 1;
+        for (int i = 0; i < strlen(line); i++)
+        {
+            if (!strchr(".- ", line[i]))
+            {
+                isMorseCode = 0;
+                break;
+            }
+        }
+
+        if (isMorseCode)
+        {
+            printf("Original message (Morse Code): %s\n", line);
+
+            // Convert Morse code to characters
+            printf("Characters: ");
+            char *token = strtok(line, " ");
+            while (token != NULL)
+            {
+                char result = searchMorseCode(root, token);
+                if (result != '\0')
+                {
+                    printf("%c", result);
+                }
+                else
+                {
+                    printf("?");
+                }
+                token = strtok(NULL, " ");
+            }
+            printf("\n");
+        }
+        else
+        {
+            printf("Original message: %s\n", line);
+
+            // Convert to Morse code
+            printf("Morse Code: ");
+            printMorseCode(root, line);
+        }
     }
 
     fclose(file);
 }
 
-void fitur_encodeMorse(TreeNode *root)
+void user1Menu(TreeNode *root)
+{
+    int choice;
+    while (1)
+    {
+        menuPengguna1();
+        scanf("%d", &choice);
+        getchar(); 
+s
+        switch (choice)
+        {
+        case 1:
+            writeMessageToFile("../user1.txt");
+            getchar();
+            break;
+        case 2:
+            readMessageFromFile(root, "../user2.txt");
+            getchar();
+            break;
+        case 0:
+            return;
+        default:
+            printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
+
+void user2Menu(TreeNode *root)
+{
+    int choice;
+    while (1)
+    {
+        menuPengguna2();
+        scanf("%d", &choice);
+        getchar(); 
+
+        switch (choice)
+        {
+        case 1:
+            writeMessageToFile("../user2.txt");
+            getchar();
+            break;
+        case 2:
+            readMessageFromFile(root, "../user1.txt");
+            getchar();
+            break;
+        case 0:
+            return;
+        default:
+            printf("Invalid choice. Please try again.\n");
+        }
+    }
+}
+
+void feature_encodeMorse(TreeNode *root)
 {
     char *input = readInput();
     printf("\nMorse Code:\n");
@@ -272,7 +326,7 @@ void fitur_encodeMorse(TreeNode *root)
     free(input);
 }
 
-void fitur_decodeMorse(TreeNode *root)
+void feature_decodeMorse(TreeNode *root)
 {
     char *input = readInput();
     printf("\nCharacters:\n");
