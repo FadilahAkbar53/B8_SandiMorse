@@ -1,75 +1,130 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "bangkong.c"
+#include "Morse.h"
+#include "tampilan.h"
 
-int main() {
-    // Buat tree dan sisipkan alfabet
-    root = createNewTreeNode(' ', "");
-    insertAlphabet(root);
+int main()
+{
+    TreeNode *morseTree = NULL;
+    char input;
+    char startChar; 
+    char endChar;
+    initialMorse(&morseTree);
 
     int choice;
+    do
+    {
+        menuUtama();
+        scanf("%d", &choice);
+        getchar();
 
-    printf("Menu:\n");
-    printf("1. Konversi karakter Morse ke karakter\n");
-    printf("2. Konversi kalimat Morse ke karakter\n");
-    printf("3. Konversi karakter ke karakter Morse\n");
-    printf("4. Konversi kalimat ke karakter Morse\n");
-    printf("Pilihan Anda: ");
-    scanf("%d", &choice);
-    getchar(); // Tangkap karakter newline
+        switch (choice)
+        {
+        case 1: // Read from file
+            printf("Read from file\n");
+            readMessageFromFileAndConvert(morseTree);
+            getchar();
+            break;
+        case 2: // Morse Code Translation
+        {
+            int pilihan2;
+            menuTerjemah();
+            scanf("%d", &pilihan2);
+            getchar();
 
-    switch (choice) {
-        case 1:
+            if (pilihan2 == 0)
             {
-                char morseCode[100];
-                printf("Masukkan sandi Morse: ");
-                fgets(morseCode, sizeof(morseCode), stdin);
-                printf("Karakter: %c\n", decodeMorse(root, morseCode));
+                break; // Back to main menu
             }
-            break;
-        case 2:
+
+            switch (pilihan2)
             {
-                char morseCode[100];
-                printf("Masukkan kalimat Morse: ");
-                fgets(morseCode, sizeof(morseCode), stdin);
-                printf("Kalimat: %s\n", decodeMorseCode(root, morseCode));
+            case 1:
+                fitur_decodeMorse(morseTree);
+                getchar();
+                break;
+            case 2:
+                fitur_encodeMorse(morseTree);
+                getchar();
+                break;
+            default:
+                printf("Invalid choice!\n");
+                break;
             }
-            break;
-        case 3:
+        }
+        break;
+        case 3: // Print Tree Hierarchy
+        {
+            int pilihan3;
+            menuHirarki();
+            scanf("%d", &pilihan3);
+            getchar();
+
+            if (pilihan3 == 0)
             {
-                char karakter;
-                printf("Masukkan karakter: ");
-                scanf("%c", &karakter);
-                getchar(); // Tangkap karakter newline
-                printf("Sandi Morse: %s\n", encodeCharacter(karakter));
+                break; // Back to main menu
             }
-            break;
-        case 4:
+
+            switch (pilihan3)
             {
-                char kalimat[100];
-                printf("Masukkan kalimat: ");
-                fgets(kalimat, sizeof(kalimat), stdin);
-                printf("Sandi Morse:\n");
-                for (int i = 0; i < strlen(kalimat); i++) {
-                    if (kalimat[i] == ' ') {
-                        printf(" ");
-                        continue;
-                    }
-                    char* morse = encodeCharacter(kalimat[i]);
-                    if (strcmp(morse, "") == 0) {
-                        printf("Karakter '%c' tidak dapat dikodekan.\n", kalimat[i]);
-                    } else {
-                        printf("%s ", morse);
-                    }
-                }
-                printf("\n");
+            case 1:
+                printf("Morse Code Hierarchy Structure\n");
+                printTree(morseTree, 0); // Print the tree structure
+                getchar();
+                break;
+            case 2:
+                displayHierarchy(morseTree); // Print the letters in Morse hierarchy
+                getchar();
+                break;
+            case 3: // Path between characters
+                printf("Enter the start character: ");
+                scanf(" %c", &startChar);
+                getchar();
+                printf("Enter the end character: ");
+                scanf(" %c", &endChar);
+                getchar();
+                findPath(morseTree, toupper(startChar), toupper(endChar));
+                break;
+            default:
+                printf("Invalid choice!\n");
+                break;
             }
-            break;
+        }
+        break;
+        case 4: // Conversation
+        {
+            int pilihan4;
+            menuPercakapan();
+            scanf("%d", &pilihan4);
+            getchar();
+
+            if (pilihan4 == 0)
+            {
+                break; // Back to main menu
+            }
+
+            switch (pilihan4)
+            {
+            case 1:
+                printf("Conversation as User 1\n");
+                break;
+            case 2:
+                printf("Conversation as User 2\n");
+                break;
+            default:
+                break;
+            }
+        }
+        break;
+        case 0:
+            printf("Thank you!\n");
+            break; // Exit the program
         default:
-            printf("Pilihan tidak valid!\n");
+            printf("Invalid choice!\n");
             break;
-    }
+        }
+    } while (choice != 0);
 
+    freeTree(morseTree);
     return 0;
 }
