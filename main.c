@@ -22,7 +22,7 @@ int main()
         {
         case 1: // Read from file
             printf("Read from file\n");
-            readMessageFromFileAndConvert(morseTree);
+            readMessageFromFile(morseTree,"../input.txt");
             getchar();
             break;
         case 2: // Morse Code Translation
@@ -69,7 +69,7 @@ int main()
             {
             case 1:
                 printf("Morse Code Hierarchy Structure\n");
-                printTree(morseTree, 0); // Print the tree structure
+                printInorder(morseTree); // Print the tree structure
                 getchar();
                 break;
             case 2:
@@ -93,24 +93,28 @@ int main()
         break;
         case 4: // Conversation
         {
-            int pilihan4;
+            int pilihanPengguna;
             menuPercakapan();
-            scanf("%d", &pilihan4);
+            scanf("%d", &pilihanPengguna);
             getchar();
 
-            if (pilihan4 == 0)
+            if (pilihanPengguna == 0)
             {
-                break; // Back to main menu
+                break; // Kembali ke menu utama
             }
 
-            switch (pilihan4)
+            switch (pilihanPengguna)
             {
             case 1:
-                printf("Conversation as User 1\n");
-                break;
+            {
+                user1Menu(morseTree);
+            }
+            break;
             case 2:
-                printf("Conversation as User 2\n");
-                break;
+            {
+                user2Menu(morseTree);
+            }
+            break;
             default:
                 break;
             }
