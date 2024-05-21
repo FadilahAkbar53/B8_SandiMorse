@@ -1,5 +1,9 @@
+#ifndef B8_SANDIMORSE_TAMPILAN_H
+#define B8_SANDIMORSE_TAMPILAN_H
+
 #include <stdio.h>
 #include <stdlib.h>
+
 void menuUtama()
 {
     system("cls");
@@ -96,3 +100,5 @@ void menuPengguna()
     printf("=====================================\n");
     printf("Pilihan anda : ");
 }
+
+#endif //B8_SANDIMORSE_TAMPILAN_H

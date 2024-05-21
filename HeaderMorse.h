@@ -2,7 +2,14 @@
 #define HEADER_H
 
 #include "Stack.h"
+#include "Tampilan.h"
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+
 
 typedef struct TreeNode
 {
@@ -19,8 +26,9 @@ TreeNode* searchNodeMorse(TreeNode *root, char character);
 char decode(TreeNode *root, const char *code);
 char *encode(TreeNode *root,const char *input);
 void freeTree(TreeNode *root);
-char *readInput();
 
+
+char *readInput();
 void fitur_encodeMorse(TreeNode *root);
 void fitur_decodeMorse(TreeNode *root);
 void printInorder(TreeNode *root);

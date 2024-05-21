@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "Morse.h"
-#include "tampilan.h"
+
+#include "Feature.h"
 
 int main()
 {
