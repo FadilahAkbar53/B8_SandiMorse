@@ -2,43 +2,31 @@
 #define MORSE_H
 
 #include "HeaderMorse.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
-TreeNode *createMorseTree(char character)
-{
-    TreeNode *newNode = (TreeNode *)malloc(sizeof(TreeNode));
+TreeNode *createTreeNode(char character, TreeNode *parent) {
+    TreeNode *newNode = (TreeNode *) malloc(sizeof(TreeNode));
     newNode->character = character;
     newNode->left = NULL;
     newNode->right = NULL;
+    newNode->parent = parent;  // Initialize parent pointer
     return newNode;
 }
 
-void insertCodeMorse(TreeNode **root, const char *code, char character)
-{
-    if (*root == NULL)
-    {
-        *root = createMorseTree('\0');
+void insertCodeMorse(TreeNode **root, const char *code, char character) {
+    if (*root == NULL) {
+        *root = createTreeNode('@', NULL);
     }
 
     TreeNode *current = *root;
-    while (*code)
-    {
-        if (*code == '.')
-        {
-            if (current->left == NULL)
-            {
-                current->left = createMorseTree('\0');
+    while (*code) {
+        if (*code == '.') {
+            if (current->left == NULL) {
+                current->left = createTreeNode('~', current);
             }
             current = current->left;
-        }
-        else if (*code == '-')
-        {
-            if (current->right == NULL)
-            {
-                current->right = createMorseTree('\0');
+        } else if (*code == '-') {
+            if (current->right == NULL) {
+                current->right = createTreeNode('~', current);
             }
             current = current->right;
         }
@@ -47,8 +35,7 @@ void insertCodeMorse(TreeNode **root, const char *code, char character)
     current->character = character;
 }
 
-void initialMorse(TreeNode **root)
-{
+void initialMorse(TreeNode **root) {
     // Add Morse codes for letters
     insertCodeMorse(root, ".-", 'A');
     insertCodeMorse(root, "-...", 'B');
@@ -89,10 +76,8 @@ void initialMorse(TreeNode **root)
     insertCodeMorse(root, "---..", '8');
     insertCodeMorse(root, "----.", '9');
 
-    // Add Morse code for space
+    // Add Morse codes for space and symbols
     insertCodeMorse(root, ".-..-.", ' ');
-
-    // Add Morse code for symbol
     insertCodeMorse(root, "..--..", '?');
     insertCodeMorse(root, "-.-.--", '!');
     insertCodeMorse(root, "---...", ':');
@@ -106,32 +91,25 @@ void initialMorse(TreeNode **root)
     insertCodeMorse(root, ".-.-.", '+');
 }
 
-char searchMorseCode(TreeNode *root, const char *code)
-{
-    TreeNode *current = root;
-    while (*code && current != NULL)
-    {
-        if (*code == '.')
-        {
-            current = current->left;
-        }
-        else if (*code == '-')
-        {
-            current = current->right;
-        }
-        code++;
+TreeNode* searchNodeMorse(TreeNode *root, char character) {
+    if (root == NULL) {
+        return NULL;
     }
-    return (current != NULL) ? current->character : '\0';
+    if (root->character == character) {
+        return root;
+    }
+    TreeNode *leftResult = searchNodeMorse(root->left, character);
+    if (leftResult != NULL) {
+        return leftResult;
+    }
+    return searchNodeMorse(root->right, character);
 }
 
-void findMorseCode(TreeNode *root, char character, char *buffer, int depth)
-{
-    if (root == NULL)
-    {
+void findMorseCode(TreeNode *root, char character, char *buffer, int depth) {
+    if (root == NULL) {
         return;
     }
-    if (root->character == character)
-    {
+    if (root->character == character) {
         buffer[depth] = '\0';
         printf("%s ", buffer);
         return;
@@ -142,16 +120,11 @@ void findMorseCode(TreeNode *root, char character, char *buffer, int depth)
     findMorseCode(root->right, character, buffer, depth + 1);
 }
 
-void printMorseCode(TreeNode *root, const char *input)
-{
-    for (int i = 0; i < strlen(input); i++)
-    {
-        if (input[i] == ' ')
-        {
+void printMorseCode(TreeNode *root, const char *input) {
+    for (int i = 0; i < strlen(input); i++) {
+        if (input[i] == ' ') {
             printf(".-..-. ");
-        }
-        else
-        {
+        } else {
             char buffer[100];
             findMorseCode(root, toupper(input[i]), buffer, 0);
         }
@@ -159,203 +132,87 @@ void printMorseCode(TreeNode *root, const char *input)
     printf("\n");
 }
 
-void freeTree(TreeNode *root)
-{
-    if (root != NULL)
-    {
+char decode(TreeNode *root, const char *code) {
+    TreeNode *current = root;
+    while (*code && current != NULL) {
+        if (*code == '.') {
+            current = current->left;
+        } else if (*code == '-') {
+            current = current->right;
+        }
+        code++;
+    }
+    return (current != NULL) ? current->character : '\0';
+}
+
+char *encode(TreeNode *root, const char *input) {
+    if (input == NULL || *input == '\0') {
+        return NULL;
+    }
+
+    size_t resultSize = 1;
+    char *result = (char*)malloc(resultSize * sizeof(char));
+    if (result == NULL) {
+        printf("Memory allocation failed\n");
+        return NULL;
+    }
+    result[0] = '\0';
+
+    while (*input) {
+        stack codeStack;
+        codeStack.top = NULL;
+
+        TreeNode *current = searchNodeMorse(root, toupper(*input));
+        if (current == NULL) {
+            input++;
+            continue; // skip characters that are not found in the tree
+        }
+
+        while (current->parent != NULL) {
+            TreeNode *parent = current->parent;
+            if (current == parent->left) {
+                push(&codeStack, '.');
+            } else if (current == parent->right) {
+                push(&codeStack, '-');
+            }
+            current = parent;
+        }
+
+        char *morseCode = linkedListToString(codeStack.top);
+
+        while (codeStack.top != NULL) {
+            stack *temp = (stack *) codeStack.top;
+            codeStack.top = codeStack.top->next;
+            free(temp);
+        }
+
+        if (morseCode != NULL) {
+            resultSize += strlen(morseCode) + 1;
+            result = (char*)realloc(result, resultSize * sizeof(char));
+            if (result == NULL) {
+                printf("Memory allocation failed\n");
+                return NULL;
+            }
+            strcat(result, morseCode);
+            strcat(result, " ");
+            free(morseCode);
+        }
+        input++;
+    }
+
+    result[resultSize - 2] = '\0'; // Remove the trailing space
+
+    return result;
+}
+
+void freeTree(TreeNode *root) {
+    if (root != NULL) {
         freeTree(root->left);
         freeTree(root->right);
         free(root);
     }
 }
 
-char *readInput()
-{
-    char *input = NULL;
-    size_t size = 0;
-    printf("\nEnter input (end with Enter): ");
-    size_t len = getline(&input, &size, stdin);
-    if (len == -1)
-    {
-        printf("Error reading input.\n");
-        exit(1);
-    }
-    input[len - 1] = '\0'; // remove newline character
-    return input;
-}
 
-/*FITUR FITUR*/
-
-void writeMessageToFile(const char *filename)
-{
-    FILE *file = fopen(filename, "a+");
-    if (file == NULL)
-    {
-        printf("Error opening file for writing.\n");
-        return;
-    }
-
-    char *input = readInput();
-    fprintf(file, "\n%s", input);
-
-    fclose(file);
-    free(input);
-    printf("Message written to file %s.\n", filename);
-}
-
-void readMessageFromFile(TreeNode *root, const char *filename)
-{
-    FILE *file = fopen(filename, "r");
-    if (file == NULL)
-    {
-        printf("Error opening file for reading.\n");
-        return;
-    }
-
-    char line[1024];
-    while (fgets(line, sizeof(line), file) != NULL)
-    {
-        // Remove newline character
-        line[strcspn(line, "\n")] = '\0';
-
-        // Check if the line contains Morse code or regular characters
-        int isMorseCode = 1;
-        for (int i = 0; i < strlen(line); i++)
-        {
-            if (!strchr(".- ", line[i]))
-            {
-                isMorseCode = 0;
-                break;
-            }
-        }
-
-        if (isMorseCode)
-        {
-            printf("Original message (Morse Code): %s\n", line);
-
-            // Convert Morse code to characters
-            printf("Characters: ");
-            char *token = strtok(line, " ");
-            while (token != NULL)
-            {
-                char result = searchMorseCode(root, token);
-                if (result != '\0')
-                {
-                    printf("%c", result);
-                }
-                else
-                {
-                    printf("?");
-                }
-                token = strtok(NULL, " ");
-            }
-            printf("\n");
-        }
-        else
-        {
-            printf("Original message: %s\n", line);
-
-            // Convert to Morse code
-            printf("Morse Code: ");
-            printMorseCode(root, line);
-        }
-    }
-
-    fclose(file);
-}
-
-void user1Menu(TreeNode *root)
-{
-    int choice;
-    while (1)
-    {
-        menuPengguna1();
-        scanf("%d", &choice);
-        getchar(); 
-s
-        switch (choice)
-        {
-        case 1:
-            writeMessageToFile("../user1.txt");
-            getchar();
-            break;
-        case 2:
-            readMessageFromFile(root, "../user2.txt");
-            getchar();
-            break;
-        case 0:
-            return;
-        default:
-            printf("Invalid choice. Please try again.\n");
-        }
-    }
-}
-
-void user2Menu(TreeNode *root)
-{
-    int choice;
-    while (1)
-    {
-        menuPengguna2();
-        scanf("%d", &choice);
-        getchar(); 
-
-        switch (choice)
-        {
-        case 1:
-            writeMessageToFile("../user2.txt");
-            getchar();
-            break;
-        case 2:
-            readMessageFromFile(root, "../user1.txt");
-            getchar();
-            break;
-        case 0:
-            return;
-        default:
-            printf("Invalid choice. Please try again.\n");
-        }
-    }
-}
-
-void feature_encodeMorse(TreeNode *root)
-{
-    char *input = readInput();
-    printf("\nMorse Code:\n");
-    printMorseCode(root, input);
-    free(input);
-}
-
-void feature_decodeMorse(TreeNode *root)
-{
-    char *input = readInput();
-    printf("\nCharacters:\n");
-    char *token = strtok(input, " ");
-    while (token != NULL)
-    {
-        char result = searchMorseCode(root, token);
-        if (result != '\0')
-        {
-            printf("%c", result);
-        }
-        else
-        {
-            printf("?");
-        }
-        token = strtok(NULL, " ");
-    }
-    printf("\n");
-    free(input);
-}
-
-void printInorder(TreeNode *root)
-{
-    if (root != NULL)
-    {
-        printInorder(root->left);
-        printf("%c ", root->character);
-        printInorder(root->right);
-    }
-}
 
 #endif /* HEADER_H */

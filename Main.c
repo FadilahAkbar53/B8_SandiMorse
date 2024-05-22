@@ -1,12 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "HeaderMorse.h"
-#include "Morse.h"
-#include "tampilan.h"
+#include "Tampilan.h"
 
 int main()
 {
     TreeNode *morseTree = NULL;
+    char input;
+    char startChar; 
+    char endChar;
     initialMorse(&morseTree);
 
     int choice;
@@ -18,14 +17,12 @@ int main()
 
         switch (choice)
         {
-        case 1: // Baca file
-        {
-            printf("Baca file");
-            readMessageFromFile(morseTree, "../input.txt");
+        case 1: // Read from file
+            printf("Read from file\n");
+            readMessageFromFile(morseTree,"File/input.txt");
             getchar();
-        }
-        break;
-        case 2: // Terjemahan Sandi Morse
+            break;
+        case 2: // Morse Code Translation
         {
             int pilihan2;
             menuTerjemah();
@@ -34,30 +31,26 @@ int main()
 
             if (pilihan2 == 0)
             {
-                break; // Kembali ke menu utama
+                break; // Back to main menu
             }
 
             switch (pilihan2)
             {
             case 1:
-            {
                 fitur_decodeMorse(morseTree);
                 getchar();
-            }
-            break;
+                break;
             case 2:
-            {
                 fitur_encodeMorse(morseTree);
                 getchar();
-            }
-            break;
+                break;
             default:
-                printf("Pilihan tidak valid!\n");
+                printf("Invalid choice!\n");
                 break;
             }
         }
         break;
-        case 3: // Print Struktur hirarki Tree
+        case 3: // Print Tree Hierarchy
         {
             int pilihan3;
             menuHirarki();
@@ -66,25 +59,36 @@ int main()
 
             if (pilihan3 == 0)
             {
-                break; // Kembali ke menu utama
+                break; // Back to main menu
             }
 
             switch (pilihan3)
             {
             case 1:
-                printf("Struktur Hirarki Sandi Morse\n");
+                printf("Morse Code Hierarchy Structure\n");
+                printInorder(morseTree); // Print the tree structure
                 getchar();
                 break;
             case 2:
-                printf("Struktur huruf dalam hirarki sandi\n");
+                displayHierarchy(morseTree); // Print the letters in Morse hierarchy
                 getchar();
                 break;
+            case 3: // Path between characters
+                printf("Enter the start character: ");
+                scanf(" %c", &startChar);
+                getchar();
+                printf("Enter the end character: ");
+                scanf(" %c", &endChar);
+                getchar();
+                findPath(morseTree, toupper(startChar), toupper(endChar));
+                break;
             default:
+                printf("Invalid choice!\n");
                 break;
             }
         }
         break;
-        case 4: // Percakapan user
+        case 4: // Conversation
         {
             int pilihanPengguna;
             menuPercakapan();
@@ -114,13 +118,13 @@ int main()
         }
         break;
         case 0:
-            printf("Terima kasih!\n");
-            return 0; // Keluar dari program
+            printf("Thank you!\n");
+            break; // Exit the program
         default:
-            printf("Pilihan tidak valid!\n");
+            printf("Invalid choice!\n");
             break;
         }
-    } while (choice != 6);
+    } while (choice != 0);
 
     freeTree(morseTree);
     return 0;
