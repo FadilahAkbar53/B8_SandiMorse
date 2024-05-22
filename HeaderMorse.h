@@ -2,15 +2,12 @@
 #define HEADER_H
 
 #include "Stack.h"
-#include "Tampilan.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
-
-
 typedef struct TreeNode
 {
     char character;
@@ -19,7 +16,7 @@ typedef struct TreeNode
     struct TreeNode *parent;
 } TreeNode;
 
-// Function Moorse.h
+// Function Morse.h
 TreeNode *createTreeNode(char character, TreeNode *parent);
 void insertCodeMorse(TreeNode **root, const char *code, char character);
 void initialMorse(TreeNode **root);
@@ -45,5 +42,13 @@ void findAndhierarchyRoot(TreeNode *root, char target);
 void displayHierarchy(TreeNode *root);
 int findPathToRoot(TreeNode *node, char *path, int *sidePath);
 void findPath(TreeNode *root, char start, char end);
+
+// Function Tampilan.h
+void menuUtama();
+void menuTerjemah();
+void menuHirarki();
+void menuPercakapan();
+void menuPengguna1();
+void menuPengguna2();
 
 #endif /* HEADER_H */
