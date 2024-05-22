@@ -19,21 +19,27 @@ typedef struct TreeNode
     struct TreeNode *parent;
 } TreeNode;
 
+// Function Moorse.h
 TreeNode *createTreeNode(char character, TreeNode *parent);
 void insertCodeMorse(TreeNode **root, const char *code, char character);
 void initialMorse(TreeNode **root);
 TreeNode* searchNodeMorse(TreeNode *root, char character);
+void findMorseCode(TreeNode *root, char character, char *buffer, int depth);
+void printMorseCode(TreeNode *root, const char *input);
 char decode(TreeNode *root, const char *code);
 char *encode(TreeNode *root,const char *input);
 void freeTree(TreeNode *root);
 
-
+// Function Feature.h
 char *readInput();
+void writeMessageToFile(const char *filename);
+void readMessageFromFile(TreeNode *root, const char *filename);
+void user1Menu(TreeNode *root);
+void user2Menu(TreeNode *root);
 void fitur_encodeMorse(TreeNode *root);
 void fitur_decodeMorse(TreeNode *root);
 void printInorder(TreeNode *root);
 
-void printTree(TreeNode *root, int level);
 void hierarchyRoot(TreeNode *root, char target, int level, bool *found);
 void findAndhierarchyRoot(TreeNode *root, char target);
 void displayHierarchy(TreeNode *root);
