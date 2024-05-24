@@ -1,5 +1,4 @@
-
-#include "Feature.h"
+#include "Tampilan.h"
 
 int main()
 {
@@ -20,7 +19,7 @@ int main()
         {
         case 1: // Read from file
             printf("Read from file\n");
-            readMessageFromFile(morseTree,"../input.txt");
+            readMessageFromFile(morseTree,"File/input.txt");
             getchar();
             break;
         case 2: // Morse Code Translation

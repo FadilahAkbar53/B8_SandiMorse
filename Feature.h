@@ -89,11 +89,11 @@ void user1Menu(TreeNode *root) {
         getchar();
         switch (choice) {
             case 1:
-                writeMessageToFile("../user1.txt");
+                writeMessageToFile("File/user1.txt");
                 getchar();
                 break;
             case 2:
-                readMessageFromFile(root, "../user2.txt");
+                readMessageFromFile(root, "File/user2.txt");
                 getchar();
                 break;
             case 0:
@@ -113,11 +113,11 @@ void user2Menu(TreeNode *root) {
 
         switch (choice) {
             case 1:
-                writeMessageToFile("../user2.txt");
+                writeMessageToFile("File/user2.txt");
                 getchar();
                 break;
             case 2:
-                readMessageFromFile(root, "../user1.txt");
+                readMessageFromFile(root, "File/user1.txt");
                 getchar();
                 break;
             case 0:
