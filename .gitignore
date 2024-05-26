@@ -3,3 +3,5 @@
 *.exe
 testing
 test
+cmake-build-debug
+build
