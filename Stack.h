@@ -1,7 +1,3 @@
-//
-// Created by ASUS on 18/5/2024.
-//
-
 #ifndef B8_SANDIMORSE_LINKEDLIST_H
 #define B8_SANDIMORSE_LINKEDLIST_H
 

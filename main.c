@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "Morse.h"
-#include "tampilan.h"
+#include "Tampilan.h"
 
 int main()
 {
@@ -21,14 +18,16 @@ int main()
         switch (choice)
         {
         case 1: // Read from file
+            system("cls");
             printf("Read from file\n");
-            readMessageFromFile(morseTree,"../input.txt");
+            readMessageFromFile(morseTree,"File/input.txt");
             getchar();
             break;
         case 2: // Morse Code Translation
         {
             int pilihan2;
-            menuTerjemah();
+            system("cls");
+            menuTerjemah(); 
             scanf("%d", &pilihan2);
             getchar();
 
@@ -40,11 +39,15 @@ int main()
             switch (pilihan2)
             {
             case 1:
+                system("cls");
                 fitur_decodeMorse(morseTree);
+                printf("\nTekan apapun untuk kembali!");
                 getchar();
                 break;
             case 2:
+                system("cls");
                 fitur_encodeMorse(morseTree);
+                printf("\nTekan apapun untuk kembali!");
                 getchar();
                 break;
             default:
@@ -56,6 +59,7 @@ int main()
         case 3: // Print Tree Hierarchy
         {
             int pilihan3;
+            system("cls");
             menuHirarki();
             scanf("%d", &pilihan3);
             getchar();
@@ -68,12 +72,16 @@ int main()
             switch (pilihan3)
             {
             case 1:
+                system("cls");
                 printf("Morse Code Hierarchy Structure\n");
                 printInorder(morseTree); // Print the tree structure
+                printf("\nTekan apapun untuk kembali!");
                 getchar();
                 break;
             case 2:
+                system("cls");
                 displayHierarchy(morseTree); // Print the letters in Morse hierarchy
+                printf("\nTekan apapun untuk kembali!");
                 getchar();
                 break;
             case 3: // Path between characters
@@ -84,6 +92,8 @@ int main()
                 scanf(" %c", &endChar);
                 getchar();
                 findPath(morseTree, toupper(startChar), toupper(endChar));
+                printf("\nTekan apapun untuk kembali!");
+                getchar();
                 break;
             default:
                 printf("Invalid choice!\n");

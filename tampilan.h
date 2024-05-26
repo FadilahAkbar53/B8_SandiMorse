@@ -1,5 +1,10 @@
+#ifndef B8_SANDIMORSE_TAMPILAN_H
+#define B8_SANDIMORSE_TAMPILAN_H
+
 #include <stdio.h>
 #include <stdlib.h>
+#include "Feature.h"
+
 void menuUtama()
 {
     system("cls");
@@ -62,9 +67,9 @@ void menuPengguna1()
 {
     system("cls");
     printf("=====================================\n");
-    printf("|               Menu                 |\n");
+    printf("|           Menu Pengguna 1          |\n");
     printf("=====================================\n");
-    printf("| 1. Menulis pesan kepada pengguna 1 |\n");
+    printf("| 1. Menulis pesan kepada pengguna 2 |\n");
     printf("| 2. Membaca Pesan dari pengguna 2   |\n");
     printf("| 0. Kembali                         |\n");
     printf("=====================================\n");
@@ -75,24 +80,13 @@ void menuPengguna2()
 {
     system("cls");
     printf("=====================================\n");
-    printf("|               Menu                 |\n");
+    printf("|           Menu Pengguna 2          |\n");
     printf("=====================================\n");
     printf("| 1. Menulis pesan kepada pengguna 1 |\n");
-    printf("| 2. Membaca Pesan dari pengguna 2   |\n");
+    printf("| 2. Membaca Pesan dari pengguna 1   |\n");
     printf("| 0. Kembali                         |\n");
     printf("=====================================\n");
     printf("Pilihan anda : ");
 }
 
-void menuPengguna()
-{
-    system("cls");
-    printf("=====================================\n");
-    printf("|            Menu Pengguna           |\n");
-    printf("=====================================\n");
-    printf("| 1. Menulis pesan                   |\n");
-    printf("| 2. Membaca Pesan                   |\n");
-    printf("| 0. Kembali                         |\n");
-    printf("=====================================\n");
-    printf("Pilihan anda : ");
-}
+#endif //B8_SANDIMORSE_TAMPILAN_H
