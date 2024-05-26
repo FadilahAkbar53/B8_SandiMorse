@@ -4,23 +4,30 @@
 
 #include "Morse.h"
 
+// Fungsi untuk membaca input dari pengguna menggunakan linked list
 char *readInput() {
-    char *input = malloc(1024);
-    if (!input) {
-        printf("Memory allocation error.\n");
-        exit(1);
+    node *inputList = NULL;
+    int ch;
+
+    printf("\nMasukkan input (akhiri dengan Enter): \n");
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+        insertLast(&inputList, (char) ch);
     }
-    printf("\nEnter input (end with Enter): ");
-    if (fgets(input, 1024, stdin) != NULL) {
-        input[strcspn(input, "\n")] = '\0'; // remove newline character
-    }
+
+    // Konversi linked list menjadi string
+    char *input = linkedListToString(inputList);
+
+    // Bebaskan memori linked list
+    freeLinkedList(&inputList);
+
     return input;
 }
 
+// Fungsi untuk menulis pesan ke file
 void writeMessageToFile(const char *filename) {
     FILE *file = fopen(filename, "a+");
     if (file == NULL) {
-        printf("Error opening file for writing.\n");
+        printf("Error membuka file untuk menulis.\n");
         return;
     }
 
@@ -29,22 +36,84 @@ void writeMessageToFile(const char *filename) {
 
     fclose(file);
     free(input);
-    printf("Message written to file %s.\n", filename);
+    printf("Pesan telah ditulis ke file %s.\n", filename);
 }
 
+// Fungsi untuk membaca pesan dari file
 void readMessageFromFile(TreeNode *root, const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        printf("Error opening file for reading.\n");
+        printf("Error membuka file untuk membaca.\n");
         return;
     }
 
-    char line[1024];
-    while (fgets(line, sizeof(line), file) != NULL) {
-        // Remove newline character
-        line[strcspn(line, "\n")] = '\0';
+    node *inputList = NULL;
+    int ch;
 
-        // Check if the line contains Morse code or regular characters
+    // Baca file karakter demi karakter
+    while ((ch = fgetc(file)) != EOF) {
+        if (ch != '\n') {
+            insertLast(&inputList, (char)ch);
+        } else {
+            // Konversi linked list menjadi string
+            char *line = linkedListToString(inputList);
+            if (line == NULL) {
+                printf("Gagal mengalokasikan memori\n");
+                fclose(file);
+                freeLinkedList(&inputList);
+                return;
+            }
+
+            // Cek apakah baris tersebut berisi kode Morse atau karakter biasa
+            int isMorseCode = 1;
+            for (int i = 0; i < strlen(line); i++) {
+                if (!strchr(".- ", line[i])) {
+                    isMorseCode = 0;
+                    break;
+                }
+            }
+
+            if (isMorseCode) {
+                printf("Pesan asli (Kode Morse):\n %s\n\n", line);
+
+                // Konversi kode Morse menjadi karakter
+                printf("Karakter: ");
+                printf("\n");
+                char *token = strtok(line, " ");
+                while (token != NULL) {
+                    char result = decode(root, token);
+                    if (result != '\0') {
+                        printf("%c", result);
+                    } else {
+                        printf("?");
+                    }
+                    token = strtok(NULL, " ");
+                }
+                printf("\n");
+            } else {
+                printf("Pesan asli:\n %s\n\n", line);
+
+                // Konversi menjadi kode Morse
+                printf("Kode Morse: \n");
+                printMorseCode(root, line);
+                printf("\n");
+            }
+
+            free(line);
+            freeLinkedList(&inputList);  // Kosongkan linked list untuk baris berikutnya
+        }
+    }
+
+    // Tangani baris terakhir jika tidak diakhiri dengan newline
+    if (inputList != NULL) {
+        char *line = linkedListToString(inputList);
+        if (line == NULL) {
+            printf("Gagal mengalokasikan memori\n");
+            fclose(file);
+            freeLinkedList(&inputList);
+            return;
+        }
+
         int isMorseCode = 1;
         for (int i = 0; i < strlen(line); i++) {
             if (!strchr(".- ", line[i])) {
@@ -54,10 +123,11 @@ void readMessageFromFile(TreeNode *root, const char *filename) {
         }
 
         if (isMorseCode) {
-            printf("Original message (Morse Code): %s\n", line);
+            printf("Pesan asli (Kode Morse):\n %s\n\n", line);
 
-            // Convert Morse code to characters
-            printf("Characters: ");
+            // Konversi kode Morse menjadi karakter
+            printf("Karakter: ");
+            printf("\n");
             char *token = strtok(line, " ");
             while (token != NULL) {
                 char result = decode(root, token);
@@ -70,14 +140,18 @@ void readMessageFromFile(TreeNode *root, const char *filename) {
             }
             printf("\n");
         } else {
-            printf("Original message: %s\n", line);
+            printf("Pesan asli:\n %s\n\n", line);
 
-            // Convert to Morse code
-            printf("Morse Code: ");
+            // Konversi menjadi kode Morse
+            printf("Kode Morse: \n");
             printMorseCode(root, line);
+            printf("\n");
         }
+
+        free(line);
     }
 
+    freeLinkedList(&inputList);
     fclose(file);
 }
 
@@ -99,11 +173,12 @@ void user1Menu(TreeNode *root) {
             case 0:
                 return;
             default:
-                printf("Invalid choice. Please try again.\n");
+                printf("Pilihan tidak valid. Silakan coba lagi.\n");
         }
     }
 }
 
+// Fungsi menu untuk pengguna 2
 void user2Menu(TreeNode *root) {
     int choice;
     while (1) {
@@ -123,7 +198,7 @@ void user2Menu(TreeNode *root) {
             case 0:
                 return;
             default:
-                printf("Invalid choice. Please try again.\n");
+                printf("Pilihan tidak valid. Silakan coba lagi.\n");
         }
     }
 }
@@ -168,63 +243,65 @@ void printInorder(TreeNode *root) {
     }
 }
 
-// function to print hierarchy from root to the target character
+// Fungsi untuk mencetak hierarki dari root ke karakter target
 void hierarchyRoot(TreeNode *root, char target, int level, bool *found) {
     if (root == NULL) {
         return;
     }
 
-    // Traverse the left subtree first
+    // Traversing subtree kiri terlebih dahulu
     hierarchyRoot(root->left, target, level + 1, found);
 
-    // Print the current node's character
-    if (!*found) // Only print if target has not been found yet
+    // Cetak karakter node saat ini
+    if (!*found) // Cetak hanya jika target belum ditemukan
     {
         printf("%c", root->character);
     }
 
-    // Check if the current node is the target
+    // Cek apakah node saat ini adalah target
     if (root->character == target) {
-        *found = true; // Set found to true to stop further printing
+        *found = true; // Set found ke true untuk menghentikan pencetakan lebih lanjut
         return;
     }
 
-    // Traverse the right subtree last
+    // Traversing subtree kanan terakhir
     hierarchyRoot(root->right, target, level + 1, found);
 }
 
-void findAndhierarchyRoot(TreeNode *root, char target) {
+// Fungsi untuk menemukan dan mencetak hierarki dari root ke karakter target
+void findhierarchyRoot(TreeNode *root, char target) {
     bool found = false;
     hierarchyRoot(root, target, 0, &found);
     if (!found) {
-        printf("Character '%c' not found in the Morse tree.\n", target);
+        printf("Karakter '%c' tidak ditemukan dalam pohon Morse.\n", target);
     }
     getchar();
 }
 
-// Function to prompt user for a character and display its hierarchy
+
+// Fungsi untuk meminta karakter dari pengguna dan menampilkan hierarkinya
 void displayHierarchy(TreeNode *root) {
     char inputChar;
-    printf("Enter the character to find its hierarchy: ");
+    printf("Masukkan karakter untuk menemukan hierarkinya: ");
     scanf(" %c", &inputChar);
 
-    printf("Hierarchy for character '%c':\n", inputChar);
-    findAndhierarchyRoot(root, toupper(inputChar));
+    printf("Hierarki untuk karakter '%c':\n", inputChar);
+    findhierarchyRoot(root, toupper(inputChar));
 }
 
-// Function to find the path from a node to the root
-int findPathToRoot(TreeNode *node, char *path, int *sidePath) {
+// Fungsi untuk menemukan jalur dari node ke root
+int findPathToRoot(TreeNode *node, char *path, int *PathDirec) {
     int length = 0;
     while (node != NULL) {
         path[length] = node->character;
-        sidePath[length] = (node->parent && node->parent->right == node) ? 1 : 0; // right:1, left:0
+        PathDirec[length] = (node->parent && node->parent->right == node) ? 1 : 0; // kanan:1, kiri:0
         node = node->parent;
         length++;
     }
     return length;
 }
 
-// Function to find the path between two characters
+// Fungsi untuk menemukan jalur antara dua karakter
 void findPath(TreeNode *root, char start, char end) {
     TreeNode *startNode = searchNodeMorse(root, start);
     TreeNode *endNode = searchNodeMorse(root, end);
@@ -244,7 +321,7 @@ void findPath(TreeNode *root, char start, char end) {
     int pathStartLen = findPathToRoot(startNode, pathStart, sidePathStart);
     int pathEndLen = findPathToRoot(endNode, pathEnd, sidePathEnd);
 
-    // Find the lowest common ancestor (LCA)
+    // Temukan leluhur bersama terendah (LCA)
     int i = pathStartLen - 1;
     int j = pathEndLen - 1;
     while (i >= 0 && j >= 0 && pathStart[i] == pathEnd[j]) {
@@ -252,15 +329,15 @@ void findPath(TreeNode *root, char start, char end) {
         j--;
     }
 
-    // Print the path from the start character to the LCA (excluding the LCA)
+    // Cetak jalur dari karakter awal ke LCA (tidak termasuk LCA)
     printf("Path from '%c' to '%c': ", start, end);
     for (int k = 0; k <= i; k++) {
-        if (sidePathStart[k] == 0 || k == 0) { // Print only if it's a left child or the first character
+        if (sidePathStart[k] == 0 || k == 0) {  // Cetak hanya jika itu adalah anak kiri atau karakter pertama
             printf("%c ", pathStart[k]);
         }
     }
 
-    // Print the path from the LCA to the end character
+    // Cetak jalur dari LCA ke karakter akhir
     for (int k = j + 1; k >= 0; k--) {
         printf("%c ", pathEnd[k]);
     }

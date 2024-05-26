@@ -4,7 +4,7 @@ int main()
 {
     TreeNode *morseTree = NULL;
     char input;
-    char startChar; 
+    char startChar;
     char endChar;
     initialMorse(&morseTree);
 
