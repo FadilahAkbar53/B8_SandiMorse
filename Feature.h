@@ -381,34 +381,4 @@ char* fitur_getUser(bool showUser) {
     }
 }
 
-char *fitur_login() {
-    char *user = readInput();
-    int user_count = 0;
-    char **usernames = getAllUser(&user_count);
-    if (isValidUser(user, usernames, user_count)) {
-
-        int pilihanPengguna;
-        scanf("%d", &pilihanPengguna);
-        switch (pilihanPengguna) {
-            case 1:
-//                            sendMessageOnline(user, usernames, );
-                break;
-            case 2:
-
-                break;
-            default:
-                printf("Invalid choice!\n");
-                break;
-        }
-    }
-    free(usernames);
-    free(user);
-    getchar();
-}
-
-void sendMessageOnline(const char *sender, const char *receiver, const char *message) {
-
-}
-
-
 #endif //B8_SANDIMORSE_FEATURE_H

@@ -106,14 +106,14 @@ int main() {
             }
                 break;
             case 6: {
-                menuPilihUserOnline();
-                char *user = fitur_getUser(true);
-                printf("User %s is picking\n", user);
+                printf("Menambahkan user baru\n");
+                char *newUser = readInput();
+                createUser(newUser);
+                free(newUser);
                 getchar();
             }
                 break;
             case 5: {
-
                 menuloginUser();
                 char *userLogged = fitur_getUser(false);
                 if (userLogged != NULL) {
@@ -139,8 +139,21 @@ int main() {
                                 message *result = getMessageFromFirebase(userLogged, &arraySize);
                                 if (result != NULL) {
                                     for (int i = 0; i < arraySize; i++) {
-                                        printf("From %s : ", result[i].from);
-                                        printf("%s\n", encode(morseTree, result[i].message));
+                                        printf("From %s : \n", result[i].from);
+                                        printf("Original Message :%s\n", result[i].message);
+                                        // printf("Morse Code : %s\n", encode(morseTree, result[i].message));
+                                        printf("karakter : "); 
+                                        char *token = strtok(result[i].message, " ");
+                                        while (token != NULL) {
+                                            char result = decode(morseTree, token);
+                                            if (result != '\0') {
+                                                printf("%c", result);
+                                            } else {
+                                                printf("?");
+                                            }
+                                            token = strtok(NULL, " ");
+                                        }
+                                        printf("\n");
                                         free(result[i].from);
                                         free(result[i].message);
                                     }

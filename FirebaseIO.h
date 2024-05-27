@@ -19,6 +19,7 @@ void free_usernames(char **usernames, int count);
 void sendDataToFireBase(const char *url, cJSON *data, const char *method);
 void createUser(const char *user);
 void createMessage(const char *toUser, const char *fromUser, const char *message);
+bool isValidUser(const char *inputString, char *arrayUser[], int arraySize);
 
 
 size_t writeCallback(void *ptr, size_t size, size_t nmemb, char **data) {
