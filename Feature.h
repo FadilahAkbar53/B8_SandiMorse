@@ -3,6 +3,7 @@
 #define B8_SANDIMORSE_FEATURE_H
 
 #include "Morse.h"
+#include "FirebaseIO.h"
 
 // Fungsi untuk membaca input dari pengguna menggunakan linked list
 char *readInput() {
@@ -53,7 +54,7 @@ void readMessageFromFile(TreeNode *root, const char *filename) {
     // Baca file karakter demi karakter
     while ((ch = fgetc(file)) != EOF) {
         if (ch != '\n') {
-            insertLast(&inputList, (char)ch);
+            insertLast(&inputList, (char) ch);
         } else {
             // Konversi linked list menjadi string
             char *line = linkedListToString(inputList);
@@ -344,5 +345,70 @@ void findPath(TreeNode *root, char start, char end) {
     printf("\n");
     getchar();
 }
+
+char* fitur_getUser(bool showUser) {
+    int user_count = 0;
+    char **usernames = getAllUser(&user_count);
+    if (usernames != NULL) {
+        if (showUser) {
+            for (int i = 0; i < user_count; i++) {
+                printf("|%13s %-20s |\n", "", usernames[i]);
+            }
+        }
+        char *user = readInput();
+        if (isValidUser(user, usernames, user_count)) {
+            // Bebaskan memori untuk setiap username
+            for (int i = 0; i < user_count; i++) {
+                free(usernames[i]);
+            }
+            // Bebaskan memori array usernames
+            free(usernames);
+            return user;
+        } else {
+            // Bebaskan memori untuk setiap username
+            for (int i = 0; i < user_count; i++) {
+                free(usernames[i]);
+            }
+            // Bebaskan memori array usernames
+            free(usernames);
+            printf("User %s tidak ditemukan\n", user);
+            free(user);
+            return NULL;
+        }
+    } else {
+        printf("Failed to retrieve usernames\n");
+        return NULL;
+    }
+}
+
+char *fitur_login() {
+    char *user = readInput();
+    int user_count = 0;
+    char **usernames = getAllUser(&user_count);
+    if (isValidUser(user, usernames, user_count)) {
+
+        int pilihanPengguna;
+        scanf("%d", &pilihanPengguna);
+        switch (pilihanPengguna) {
+            case 1:
+//                            sendMessageOnline(user, usernames, );
+                break;
+            case 2:
+
+                break;
+            default:
+                printf("Invalid choice!\n");
+                break;
+        }
+    }
+    free(usernames);
+    free(user);
+    getchar();
+}
+
+void sendMessageOnline(const char *sender, const char *receiver, const char *message) {
+
+}
+
 
 #endif //B8_SANDIMORSE_FEATURE_H
