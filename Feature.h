@@ -4,13 +4,14 @@
 
 #include "Morse.h"
 #include "FirebaseIO.h"
+#include "Tampilan.h"
 
 // Fungsi untuk membaca input dari pengguna menggunakan linked list
 char *readInput() {
     node *inputList = NULL;
     int ch;
 
-    printf("\nMasukkan input (akhiri dengan Enter): \n");
+    printf("Masukkan input (akhiri dengan Enter): ");
     while ((ch = getchar()) != '\n' && ch != EOF) {
         insertLast(&inputList, (char) ch);
     }
@@ -75,7 +76,7 @@ void readMessageFromFile(TreeNode *root, const char *filename) {
             }
 
             if (isMorseCode) {
-                printf("Pesan asli (Kode Morse):\n %s\n\n", line);
+                printf("Pesan asli (Kode Morse): %s \n", line);
 
                 // Konversi kode Morse menjadi karakter
                 printf("Karakter: ");
@@ -92,7 +93,7 @@ void readMessageFromFile(TreeNode *root, const char *filename) {
                 }
                 printf("\n");
             } else {
-                printf("Pesan asli:\n %s\n\n", line);
+                printf("Pesan asli: %s\n", line);
 
                 // Konversi menjadi kode Morse
                 printf("Kode Morse: \n");
@@ -168,6 +169,7 @@ void user1Menu(TreeNode *root) {
                 getchar();
                 break;
             case 2:
+                bacaPesan2();
                 readMessageFromFile(root, "File/user2.txt");
                 getchar();
                 break;
@@ -193,6 +195,7 @@ void user2Menu(TreeNode *root) {
                 getchar();
                 break;
             case 2:
+                bacaPesan1();
                 readMessageFromFile(root, "File/user1.txt");
                 getchar();
                 break;
@@ -205,6 +208,7 @@ void user2Menu(TreeNode *root) {
 }
 
 void fitur_encodeMorse(TreeNode *root) {
+    tampilanEncode();
     char *input = readInput();
     if (input == NULL) {
         return;
@@ -220,6 +224,7 @@ void fitur_encodeMorse(TreeNode *root) {
 }
 
 void fitur_decodeMorse(TreeNode *root) {
+    tampilanDecode();
     char *input = readInput();
     printf("\nCharacters:\n");
     char *token = strtok(input, " ");
@@ -283,7 +288,7 @@ void findhierarchyRoot(TreeNode *root, char target) {
 // Fungsi untuk meminta karakter dari pengguna dan menampilkan hierarkinya
 void displayHierarchy(TreeNode *root) {
     char inputChar;
-    printf("Masukkan karakter untuk menemukan hierarkinya: ");
+    printf("\n\nMasukkan karakter untuk menemukan hierarkinya: ");
     scanf(" %c", &inputChar);
 
     printf("Hierarki untuk karakter '%c':\n", inputChar);
@@ -331,7 +336,7 @@ void findPath(TreeNode *root, char start, char end) {
     }
 
     // Cetak jalur dari karakter awal ke LCA (tidak termasuk LCA)
-    printf("Path from '%c' to '%c': ", start, end);
+    printf("\nPath from '%c' to '%c': ", start, end);
     for (int k = 0; k <= i; k++) {
         if (sidePathStart[k] == 0 || k == 0) {  // Cetak hanya jika itu adalah anak kiri atau karakter pertama
             printf("%c ", pathStart[k]);
@@ -351,9 +356,11 @@ char* fitur_getUser(bool showUser) {
     char **usernames = getAllUser(&user_count);
     if (usernames != NULL) {
         if (showUser) {
+            menuPilihUserOnline();
             for (int i = 0; i < user_count; i++) {
                 printf("|%13s %-20s |\n", "", usernames[i]);
             }
+            printf("=====================================\n");
         }
         char *user = readInput();
         if (isValidUser(user, usernames, user_count)) {
