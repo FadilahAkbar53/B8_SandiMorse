@@ -36,12 +36,12 @@ void user2Menu(TreeNode *root);
 void fitur_encodeMorse(TreeNode *root);
 void fitur_decodeMorse(TreeNode *root);
 void printInorder(TreeNode *root);
-
 void hierarchyRoot(TreeNode *root, char target, int level, bool *found);
 void findAndhierarchyRoot(TreeNode *root, char target);
 void displayHierarchy(TreeNode *root);
 int findPathToRoot(TreeNode *node, char *path, int *sidePath);
 void findPath(TreeNode *root, char start, char end);
+char* fitur_getUser(bool showUser);
 
 // Function Tampilan.h
 void menuUtama();
@@ -50,5 +50,8 @@ void menuHirarki();
 void menuPercakapan();
 void menuPengguna1();
 void menuPengguna2();
+void menuPilihUserOnline();
+void menuloginUser();
+void menuPenggunaOnline(char* user);
 
 #endif /* HEADER_H */

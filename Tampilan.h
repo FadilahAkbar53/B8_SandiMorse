@@ -89,4 +89,31 @@ void menuPengguna2()
     printf("Pilihan anda : ");
 }
 
+void menuPilihUserOnline(){
+    system("cls");
+    printf("=====================================\n");
+    printf("|           Pilih User Online        |\n");
+    printf("=====================================\n");
+
+}
+
+void menuloginUser(){
+    system("cls");
+    printf("=====================================\n");
+    printf("|    Login   |    Masukan Username  |\n");
+    printf("=====================================");
+}
+
+void menuPenggunaOnline(char* user){
+    system("cls");
+    printf("=====================================\n");
+    printf("|   Menu   |  User : %-15s|\n", user);
+    printf("=====================================\n");
+    printf("| 1. Kirim Pesan                     |\n");
+    printf("| 2. Baca Pesan                      |\n");
+    printf("| 0. Kembali                         |\n");
+    printf("=====================================\n");
+
+}
+
 #endif //B8_SANDIMORSE_TAMPILAN_H
