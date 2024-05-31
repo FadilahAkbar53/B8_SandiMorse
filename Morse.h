@@ -147,6 +147,7 @@ char decode(TreeNode *root, const char *code) {
 
 char *encode(TreeNode *root, const char *input) {
     if (input == NULL || *input == '\0') {
+        printf("Input is empty\n");
         return NULL;
     }
 
@@ -165,6 +166,7 @@ char *encode(TreeNode *root, const char *input) {
         TreeNode *current = searchNodeMorse(root, toupper(*input));
         if (current == NULL) {
             input++;
+            printf("Character %c tidak ada pada kode morse\n", *input);
             continue; // skip characters that are not found in the tree
         }
 

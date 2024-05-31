@@ -1,7 +1,7 @@
 .idea
 .vscode
 *.exe
-testing
 test
 cmake-build-debug
 build
+CMakeLists.txt
