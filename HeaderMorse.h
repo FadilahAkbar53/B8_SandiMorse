@@ -42,6 +42,9 @@ void displayHierarchy(TreeNode *root);
 int findPathToRoot(TreeNode *node, char *path, int *sidePath);
 void findPath(TreeNode *root, char start, char end);
 char* fitur_getUser(bool showUser);
+void fitur_addUser();
+void fitur_onlineChat(TreeNode *morseTree);
+
 
 // Function Tampilan.h
 void menuUtama();

@@ -351,7 +351,7 @@ void findPath(TreeNode *root, char start, char end) {
     getchar();
 }
 
-char* fitur_getUser(bool showUser) {
+char *fitur_getUser(bool showUser) {
     int user_count = 0;
     char **usernames = getAllUser(&user_count);
     if (usernames != NULL) {
@@ -362,6 +362,7 @@ char* fitur_getUser(bool showUser) {
             }
             printf("=====================================\n");
         }
+//        printf("");
         char *user = readInput();
         if (isValidUser(user, usernames, user_count)) {
             // Bebaskan memori untuk setiap username
@@ -384,8 +385,87 @@ char* fitur_getUser(bool showUser) {
         }
     } else {
         printf("Failed to retrieve usernames\n");
+        free(usernames);
         return NULL;
     }
+
 }
+
+void fitur_addUser() {
+    printf("Menambahkan user baru\n");
+    char *newUser = readInput();
+    createUser(newUser);
+    free(newUser);
+    getchar();
+}
+
+void fitur_onlineChat(TreeNode *morseTree) {
+    menuloginUser();
+    char *userLogged = fitur_getUser(false);
+    if (userLogged != NULL) {
+        printf("User %s is online\n", userLogged);
+    }else{
+        printf("User %s is offline\n", userLogged);
+    }
+   if (userLogged != NULL) {
+       printf("User %s is online\n", userLogged);
+       int choisedmenu;
+       do {
+           menuPenggunaOnline(userLogged);
+           scanf("%d", &choisedmenu);
+           getchar();
+           switch (choisedmenu) {
+               case 1: {
+                   char *toUser = fitur_getUser(true);
+                   printf(" menulis pesan ke %s", toUser);
+                   char *messages = readInput();
+                   createMessage(toUser, userLogged, messages);
+                   free(toUser);
+                   free(messages);
+                   break;
+               }
+               case 2: {
+                   printf("\nMembaca pesan dari pengguna lain\n");
+                   int arraySize;
+                   message *result = getMessageFromFirebase(userLogged, &arraySize);
+                   if (result != NULL) {
+                       for (int i = 0; i < arraySize; i++) {
+                           printf("\nFrom %s : \n", result[i].from);
+                           printf("Original Message :%s\n", result[i].message);
+                           printf("karakter : ");
+                           char *token = strtok(result[i].message, " ");
+                           while (token != NULL) {
+                               char resultChar = decode(morseTree, token);
+                               if (resultChar != '\0') {
+                                   printf("%c", resultChar);
+                               } else {
+                                   printf("?");
+                               }
+                               token = strtok(NULL, " ");
+                           }
+                           printf("\n");
+                           free(result[i].from);
+                           free(result[i].message);
+                       }
+                       free(result);
+                   }
+                   getchar();
+                   printf("Membaca pesan dari pengguna lain\n");
+                   break;
+               }
+               case 0:
+                   printf("Kembali ke menu utama\n");
+                   break;
+               default:
+                   printf("Invalid choice!\n");
+                   break;
+           }
+       } while (choisedmenu != 0);
+       free(userLogged);
+   }else{
+       free(userLogged);
+   }
+}
+
 
 #endif //B8_SANDIMORSE_FEATURE_H

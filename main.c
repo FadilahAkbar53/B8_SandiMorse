@@ -43,7 +43,7 @@ int main() {
                         break;
                 }
             }
-            break;
+                break;
             case 3: // Print Tree Hierarchy
             {
                 int pilihan3;
@@ -79,7 +79,7 @@ int main() {
                         break;
                 }
             }
-            break;
+                break;
             case 4: // Conversation
             {
                 int pilihanPengguna;
@@ -103,88 +103,29 @@ int main() {
                         break;
                 }
             }
-            break;
-            case 5: // User Login
-            int pilihanPenggunaOnline;
+                break;
+            case 5: // fitur online chat
+            {
+                int pilihanPenggunaOnline;
                 menuPercakapanOnline();
                 scanf("%d", &pilihanPenggunaOnline);
                 getchar();
                 if (pilihanPenggunaOnline == 0) {
                     break; // Back to main menu
                 }
-                    switch (pilihanPenggunaOnline) {
-                        case 1:
-                            printf("Menambahkan user baru\n");
-                            char *newUser = readInput();
-                            createUser(newUser);
-                            free(newUser);
-                            getchar();
-                            break;
-                        case 2:
-                            menuloginUser();
-                    char *userLogged = fitur_getUser(false);
-                    if (userLogged != NULL) {
-                        printf("User %s is online\n", userLogged);
-                        menuPenggunaOnline(userLogged);
-                        int choisedmenu;
-                        scanf("%d", &choisedmenu);
+                switch (pilihanPenggunaOnline) {
+                    case 1:
+                        fitur_addUser();
+                        break;
+                    case 2:
+                        fitur_onlineChat(morseTree);
                         getchar();
-                        while (choisedmenu != 0) {
-                            switch (choisedmenu) {
-                                case 1:
-                                    char *toUser = fitur_getUser(true);
-                                    printf(" menulis pesan ke %s", toUser);
-                                    char *messages = readInput();
-                                    createMessage(toUser, userLogged, messages);
-                                    free(toUser);
-                                    free(messages);
-                                    break;
-                                case 2:
-                                    printf("\nMembaca pesan dari pengguna lain\n");
-                                    int arraySize;
-                                    message *result = getMessageFromFirebase(userLogged, &arraySize);
-                                    if (result != NULL) {
-                                        for (int i = 0; i < arraySize; i++) {
-                                            printf("\nFrom %s : \n", result[i].from);
-                                            printf("Original Message :%s\n", result[i].message);
-                                            printf("karakter : "); 
-                                            char *token = strtok(result[i].message, " ");
-                                                while (token != NULL) {
-                                                char resultChar = decode(morseTree, token);
-                                                if (resultChar != '\0') {
-                                                    printf("%c", resultChar);
-                                                } else {
-                                                    printf("?");
-                                                }
-                                                token = strtok(NULL, " ");
-                                            }
-                                            printf("\n");
-                                            free(result[i].from);
-                                            free(result[i].message);
-                                        }
-                                        free(result);
-                                    }
-                                    getchar();
-                                    printf("Membaca pesan dari pengguna lain\n");
-                                    break;
-                                case 0:
-                                    printf("Kembali ke menu utama\n");
-                                    break;
-                                default:
-                                    printf("Invalid choice!\n");
-                                    break;
-                            }
-                            menuPenggunaOnline(userLogged);
-                            scanf("%d", &choisedmenu);
-                            getchar();
-                        }
-                        free(userLogged);
-                    }
-                            break;
-                        default:
-                            printf("Invalid choice!\n");
+                        break;
+                    default:
+                        printf("Invalid choice!\n");
                         break;
                 }
+            }
                 break;
             case 0:
                 penutup();

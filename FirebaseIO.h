@@ -22,16 +22,18 @@ void createMessage(const char *toUser, const char *fromUser, const char *message
 bool isValidUser(const char *inputString, char *arrayUser[], int arraySize);
 
 
-size_t writeCallback(void *ptr, size_t size, size_t nmemb, char **data) {
-    size_t totalSize = size * nmemb;
+size_t writeCallback(void *receivedData, size_t elementSize, size_t elementCount, char **data) {
+    size_t totalSize = elementSize * elementCount;
     *data = (char *) realloc(*data, strlen(*data) + totalSize + 1);
     if (*data == NULL) {
-        printf("Failed to reallocate memory!\n");
+        printf("Gagal mengalokasikan memori ulang!\n");
         return 0;
     }
-    strncat(*data, (char *) ptr, totalSize);
+    strncat(*data, (char *) receivedData, totalSize);
     return totalSize;
 }
+
+
 
 message *formatJsonArray(const char *jsonString, int *arraySize) {
     cJSON *json = cJSON_Parse(jsonString);
@@ -246,8 +248,6 @@ void createMessage( const char *toUser,const char *fromUser, const char *message
     cJSON *json = cJSON_CreateObject();
     cJSON_AddStringToObject(json, fromUser, message);
 
-//    printf("result : %s\n", cJSON_Print(json));
-
     sendDataToFireBase(url, json, "POST");
 
     free(url);
@@ -256,7 +256,7 @@ void createMessage( const char *toUser,const char *fromUser, const char *message
 
 bool isValidUser(const char *inputString, char *arrayUser[], int arraySize) {
     for (int i = 0; i < arraySize; i++) {
-        if (strstr(inputString, arrayUser[i]) != NULL) {
+        if (strcmp(inputString, arrayUser[i]) == 0) {
             return true; // Mengembalikan true jika ditemukan elemen yang cocok
         }
     }
